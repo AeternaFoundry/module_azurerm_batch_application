@@ -22,14 +22,6 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.batch_applications : (
-        length(v.name) <= 64
-      )
-    ])
-    error_message = "[from validate.ApplicationName: invalid when len(value) > 64]"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.batch_applications : (
         length(v.resource_group_name) <= 90
       )
     ])
@@ -54,27 +46,11 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.batch_applications : (
-        length(v.account_name) <= 24
+        v.display_name == null || (length(v.display_name) >= 1 && length(v.display_name) <= 1024)
       )
     ])
-    error_message = "[from validate.AccountName: invalid when len(value) > 24]"
+    error_message = "must be between 1 and 1024 characters"
   }
-  validation {
-    condition = alltrue([
-      for k, v in var.batch_applications : (
-        v.default_version == null || (length(v.default_version) <= 64)
-      )
-    ])
-    error_message = "[from validate.ApplicationVersion: invalid when len(value) > 64]"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.batch_applications : (
-        v.display_name == null || (length(v.display_name) <= 1024)
-      )
-    ])
-    error_message = "[from validate.ApplicationDisplayName: invalid when len(value) > 1024]"
-  }
-  # Note: 8 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
+  # Note: 4 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
